@@ -1,6 +1,7 @@
 using OrdersApp.Data;
 using Microsoft.EntityFrameworkCore;
 using OrdersApp.Models;
+using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,7 +29,14 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var distPath = Path.Combine(builder.Environment.ContentRootPath, "dist");
+Console.WriteLine("Dist path: " + distPath);
+Console.WriteLine("Dist exists: " + Directory.Exists(distPath));
+
+builder.Environment.WebRootPath = distPath;
+
 var app = builder.Build();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -43,12 +51,24 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(distPath),
+    RequestPath = ""        // serve at root: /
+});
+
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors("AllowFrontend");
+app.MapFallback(async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(distPath, "index.html"));
+});
+
+//app.UseCors("AllowFrontend");
 
 app.Run();

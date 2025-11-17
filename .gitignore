@@ -492,7 +492,7 @@ $RECYCLE.BIN/
 **/node_modules/
 
 # production build
-**/dist/
+
 **/build/
 
 # local env files (keep .env example checked in instead)
