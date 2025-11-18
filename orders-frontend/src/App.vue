@@ -9,7 +9,7 @@
         </p>
       </header>
 
-      <!-- LEFT: Order form -->
+      
       <section class="card">
         <h2 class="section-title">Order Form</h2>
         <p class="section-subtitle">
@@ -18,7 +18,7 @@
         </p>
 
         <form @submit.prevent="handleSubmit" novalidate>
-          <!-- Customer Name -->
+         
           <div class="form-group">
             <label for="customerName">Customer Name *</label>
             <input
@@ -32,7 +32,7 @@
             </div>
           </div>
 
-          <!-- Email -->
+        
           <div class="form-group">
             <label for="email">Email *</label>
             <input
@@ -46,7 +46,7 @@
             </div>
           </div>
 
-          <!-- Order Type (select) -->
+          
           <div class="form-group">
             <label for="orderType">Order Type *</label>
             <select
@@ -64,7 +64,6 @@
             </div>
           </div>
 
-          <!-- Order Date (date) -->
           <div class="form-group">
             <label for="orderDate">Order Date *</label>
             <input
@@ -78,7 +77,7 @@
             </div>
           </div>
 
-          <!-- Shipping Method (radio) -->
+          
           <div class="form-group">
             <label>Shipping Method *</label>
             <div class="radio-group">
@@ -115,7 +114,7 @@
             </div>
           </div>
 
-          <!-- Requires Signature (checkbox) -->
+          
           <div class="form-group">
             <label>Options</label>
             <div class="checkbox-group">
@@ -126,7 +125,7 @@
             </div>
           </div>
 
-          <!-- Accept Terms (checkbox required) -->
+         
           <div class="form-group">
             <div class="checkbox-group">
               <label class="checkbox-option">
@@ -155,7 +154,7 @@
         </form>
       </section>
 
-      <!-- RIGHT: Listing + search -->
+     
       <section class="card">
         <h2 class="section-title">Submitted Objects</h2>
         <p class="section-subtitle">
@@ -211,7 +210,7 @@
           </div>
         </div>
 
-        <!-- existing list-controls row stays as-is -->
+        
 
         <div class="list-controls" v-if="listFormType === 'orders'">
           <div class="list-controls-group">
@@ -461,7 +460,7 @@ const resetForm = () => {
   submitting.value = false;
 };
 
-// This is the payload that will be sent to /api/forms/orders
+
 const orderPayload = computed(() => ({
   CustomerName: form.customerName,
   Email: form.email,
@@ -484,7 +483,7 @@ const handleSubmit = async () => {
     });
     if (!res.ok) throw new Error("Request failed");
 
-    // after successful submit, refresh list for "orders"
+    
     listFormType.value = "orders";
     await fetchSubmissions(1);
     resetForm();
@@ -495,7 +494,7 @@ const handleSubmit = async () => {
   }
 };
 
-// -------- List + search state --------
+
 const listFormType = ref("orders");
 const searchTerm = ref("");
 const page = ref(1);
@@ -517,7 +516,7 @@ const fetchSubmissions = async (targetPage) => {
     params.set("search", searchTerm.value.trim());
   }
 
-  // extra filters only for orders
+  
   if (listFormType.value === "orders") {
     if (filterOrderStatus.value) {
       params.set("orderStatus", filterOrderStatus.value);
@@ -546,8 +545,7 @@ const fetchSubmissions = async (targetPage) => {
     const data = await res.json();
     totalCount.value = data.totalCount || 0;
     items.value = (data.items || []).map((e) => {
-      // the backend returns Data as JSON object (per earlier code),
-      // but in case it's a string, try parsing.
+      
       let parsed = null;
       if (e.data && typeof e.data === "object") {
         parsed = e.data;
